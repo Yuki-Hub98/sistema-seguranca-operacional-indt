@@ -8,3 +8,4 @@ Gabriel Pereira
 Ruane Rodrigues  
 Victor Ferreira  
 Wellyson Silva  
+Davison Bentes
