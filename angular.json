@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "sistema-seguranca-operacional": {
+    "sistema-seguranca-operacional-indt": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -56,10 +56,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "sistema-seguranca-operacional:build:production"
+              "buildTarget": "sistema-seguranca-operacional-indt:build:production"
             },
             "development": {
-              "buildTarget": "sistema-seguranca-operacional:build:development"
+              "buildTarget": "sistema-seguranca-operacional-indt:build:development"
             }
           },
           "defaultConfiguration": "development"
