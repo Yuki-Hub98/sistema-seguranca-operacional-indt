@@ -1,1 +1,57 @@
-<p>home works!</p>
+<div>
+    <div>
+        <div>
+            <div>
+                <p>funcionarios ativos</p>
+                <p>{{funcionarios.getFuncionarios()}}</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            <p>Maquinas cadastradas</p>
+            <p>{{maquinas.getMaquinas()}}</p>
+        </div>
+    </div>
+    <div>
+        <div>
+            <p>Checklist Hoje</p>
+            <p>{{checklist.getChecklist()}}</p>
+        </div>
+    </div>
+    <div>
+        <div>
+            <p>Alertas Pendentes</p>
+            <p>{{Alertas.getAlertas()}}</p>
+        </div>
+    </div>
+    <!-- area principal -->
+     <div>
+        <div>
+            <h2>Alertas recentes</h2>
+            @if(alertas.getAlertas() > 0){
+                @for(alerta in alertas){
+                    <div>
+                        <div>
+                            <p>alerta.alertaType</p>
+                            <span>alerta.alertaPriority</span>
+                        </div>
+                        <p>alerta.maquina</p>
+                        <p>alerta.operador alerta.reportDate</p>
+                    </div>
+                }
+            }
+            
+        </div>
+     </div>
+     <!-- status geral -->
+      <div>
+        <h2>Status geral</h2>
+        <p>Checklist aprovados</p>
+        <span>checklist.getChecklistAprovados</span>
+        <p>Pendentes</p>
+        <span>checklist.getChecklistPendentes</span>
+        <p>Checklist Reprovados</p>
+        <span>checklist.getChecklistReprovados</span>
+      </div>
+</div>
