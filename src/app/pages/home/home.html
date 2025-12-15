@@ -1,35 +1,72 @@
-<div>
-    <div>
+<div class="min-h-screen bg-slate-50 p-6 space-y-6">
+  <p class="text-sm uppercase tracking-wide text-gray-500">Painel</p>
+  <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+  <p class="text-gray-500 text-sm">Visão geral da segurança operacional.</p>
+  <div class="space-y-6 bg-slate-50">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="p-4 bg-sky-50 backdrop-blur-sm rounded-2xl shadow-sm border border-blue-500 flex items-center justify-between border">
         <div>
-            <div>
-                <p>funcionarios ativos</p>
-                <!-- <p>{{funcionarios.getFuncionarios()}}</p> -->
-            </div>
+          <p class="text-sm text-gray-500">funcionarios ativos</p>
+          <p class="text-3xl font-bold">156</p>
+          <!-- <p>{{funcionarios.getFuncionarios()}}</p> -->
         </div>
-    </div>
-    <div>
+        <div class="text-gray-600 text-3xl">👥</div>
+      </div>
+      <div class="p-4 bg-emerald-50 backdrop-blur-sm rounded-2xl shadow-sm border border-green-500 border flex items-center justify-between">
         <div>
-            <p>Maquinas cadastradas</p>
-            <!-- <p>{{maquinas.getMaquinas()}}</p> -->
+          <p class="text-sm text-gray-500">Maquinas cadastradas</p>
+          <p class="text-3xl font-bold">57</p>
+          <!-- <p>{{maquinas.getMaquinas()}}</p> -->
         </div>
-    </div>
-    <div>
+        <div class="text-gray-600 text-3xl">⚙️</div>
+      </div>
+      <div class="p-4 bg-sky-50 backdrop-blur-sm rounded-2xl shadow-sm border border-blue-500 border flex items-center justify-between">
         <div>
-            <p>Checklist Hoje</p>
-            <!-- <p>{{checklist.getChecklist()}}</p> -->
+          <p class="text-sm text-gray-500">Checklist Hoje</p>
+          <p class="text-3xl font-bold">27</p>
+          <!-- <p>{{checklist.getChecklist()}}</p> -->
         </div>
-    </div>
-    <div>
+        <div class="text-gray-600 text-3xl">📝</div>
+      </div>
+      <div class="p-4 bg-amber-50 backdrop-blur-sm rounded-2xl shadow-sm border border-yellow-500 border flex items-center justify-between">
         <div>
-            <p>Alertas Pendentes</p>
-            <!-- <p>{{Alertas.getAlertas()}}</p> -->
+          <p class="text-sm text-gray-500">Alertas Pendentes</p>
+          <p class="text-3xl font-bold">3</p>
+          <!-- <p>{{Alertas.getAlertas()}}</p> -->
         </div>
+        <div class="text-yellow-500 text-3xl">⚠️</div>
+      </div>
     </div>
     <!-- area principal -->
-     <div>
-        <div>
-            <h2>Alertas recentes</h2>
-            <!-- @if(alertas.getAlertas() > 0){
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      <div class="lg:col-span-2 text-xl font-bold mb-4 bg-white p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100">
+        <h2 class="p-3">Alertas recentes</h2>
+        <div class="border border-red-300 bg-red-50 p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 mb-4">
+          <div class="flex items-center justify-between">
+            <p class="text-red-600 font-semibold flex items-center gap-2">Checklist Recusado</p>
+            <span class="px-3 py-1 text-sm bg-red-600 text-white rounded-full">Urgente</span>
+          </div>
+          <p class="text-gray-700 mt-1">Prensa Hidráulica PH-001</p>
+          <p class="text-gray-500 text-sm">Operador: João Silva • 25/11/2025</p>
+        </div>
+        <div class="border p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 mb-4 bg-slate-50">
+          <div class="flex items-center justify-between">
+            <p class="font-semibold flex items-center gap-2">Checklist Pendente</p>
+            <span class="px-3 py-1 text-sm bg-gray-200 rounded-full">Atenção</span>
+          </div>
+          <p class="text-gray-700 mt-1">Torno CNC TC-015</p>
+          <p class="text-gray-500 text-sm">Operador: Maria Santos • 24/11/2025</p>
+        </div>
+        <div class="border p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 bg-slate-50">
+          <div class="flex items-center justify-between">
+            <p class="font-semibold flex items-center gap-2">Checklist Pendente</p>
+            <span class="px-3 py-1 text-sm bg-gray-200 rounded-full">Atenção</span>
+          </div>
+          <p class="text-gray-700 mt-1">Empilhadeira EMP-007</p>
+          <p class="text-gray-500 text-sm">Operador: Carlos Souza • 23/11/2025</p>
+        </div>
+
+        <!-- @if(alertas.getAlertas() > 0){
                 @for(alerta in alertas){
                     <div>
                         <div>
@@ -41,17 +78,23 @@
                     </div>
                 }
             } -->
-            
-        </div>
-     </div>
-     <!-- status geral -->
-      <div>
-        <h2>Status geral</h2>
-        <p>Checklist aprovados</p>
-        <span>checklist.getChecklistAprovados</span>
-        <p>Pendentes</p>
-        <span>checklist.getChecklistPendentes</span>
-        <p>Checklist Reprovados</p>
-        <span>checklist.getChecklistReprovados</span>
       </div>
+      <!-- status geral -->
+      <div class="bg-white p-6 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100">
+        <h2 class="text-xl font-bold mb-4">Status geral</h2>
+        <p class="text-sm font-medium">Checklist aprovados</p>
+        <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
+          <div class="bg-green-500 h-3 rounded" style="width: 85%"></div>
+        </div>
+        <p class="text-sm font-medium">Pendentes</p>
+        <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
+          <div class="bg-yellow-500 h-3 rounded" style="width: 10%"></div>
+        </div>
+        <p class="text-sm font-medium">Reprovados</p>
+        <div class="w-full bg-gray-200 h-3 rounded mt-1">
+          <div class="bg-red-500 h-3 rounded" style="width: 5%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
