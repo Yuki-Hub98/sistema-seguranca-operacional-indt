@@ -1,0 +1,52 @@
+<aside class="w-64 h-screen bg-slate-50 border-r border-gray-200 text-gray-700">
+  
+  <!-- Header -->
+  <div class="p-4 border-b border-gray-200" >
+    <h1 class="text-lg font-bold text-gray-900">Menu Principal</h1>
+  </div>
+
+  <!-- Menu -->
+  <nav class="p-4">
+    <ul class="space-y-2">
+      
+      <li class="cursor-pointer">
+        <a
+          routerLink="/"
+          routerLinkActive="bg-sky-100 text-sky-700"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition-colors"
+        >
+          <span>Dashboard</span>
+        </a>
+      </li>
+
+      <li class="cursor-pointer">
+        <a
+          routerLink="/funcionarios"
+          routerLinkActive="bg-emerald-100 text-emerald-700"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition-colors"
+        >
+          <span>Funcionários</span>
+        </a>
+      </li>
+
+      <li class="cursor-pointer">
+        <a
+          routerLink="/maquinas"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition-colors"
+        >
+          <span>Máquinas</span>
+        </a>
+      </li>
+
+      <li class="cursor-pointer">
+        <a
+          routerLink="/checklist"
+          class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 transition-colors"
+        >
+          <span>Checklist</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+</aside>

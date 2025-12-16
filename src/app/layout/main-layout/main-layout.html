@@ -1,2 +1,16 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<div class="grid grid-rows-[64px_1fr] h-screen">
+
+  <app-header></app-header>
+
+  <div  class="grid transition-all duration-300 ease-in-out"
+    [class.grid-cols-[256px_1fr]]="isOpen()"
+    [class.grid-cols-[0px_1fr]]="!isOpen()">
+    
+    <app-navbar ></app-navbar>
+
+    <main class="p-4 overflow-y-auto bg-gray-50">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>
