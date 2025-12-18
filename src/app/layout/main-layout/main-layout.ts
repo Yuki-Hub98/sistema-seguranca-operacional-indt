@@ -6,6 +6,7 @@ import { Sidebarservice } from '../../core/services/sidebarservice';
 
 @Component({
   selector: 'app-main-layout',
+  standalone: true,
   imports: [RouterOutlet, Header, Navbar],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
