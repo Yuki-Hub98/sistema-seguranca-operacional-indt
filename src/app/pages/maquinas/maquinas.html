@@ -1,1 +1,51 @@
-<p>maquinas works!</p>
+<div>
+
+  <!-- Header -->
+  <div class="min-h-auto flex justify-center my-5">
+    <div class="w-full max-w-6xl flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold">Máquinas</h1>
+        <p class="text-gray-500">
+          Gerencie as máquinas e equipamentos cadastrados no sistema
+        </p>
+      </div>
+
+      <button
+        (click)="abrirForm()"
+        class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm
+               hover:bg-blue-700 transition">
+        + Nova Máquina
+      </button>
+    </div>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="min-h-auto flex justify-center from-slate-100 to-slate-50">
+    <div class="w-full max-w-6xl bg-white rounded-xl shadow-lg p-6 border border-gray-300">
+
+      <!-- Pesquisa -->
+      <div class="mb-4">
+        <app-pesquisa-maquinas
+          (pesquisar)="filtrar($event)">
+        </app-pesquisa-maquinas>
+      </div>
+
+      <hr class="border-gray-300 mb-4" />
+
+      <!-- Tabela -->
+      <app-tabela-maquinas
+        [maquinas]="maquinas"
+        [filtro]="filtro"
+        (excluir)="excluirMaquina($event)">
+      </app-tabela-maquinas>
+
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <app-form-modal-cria-maquina
+    *ngIf="abrirModal"
+    (fechar)="fecharForm()">
+  </app-form-modal-cria-maquina>
+
+</div>
