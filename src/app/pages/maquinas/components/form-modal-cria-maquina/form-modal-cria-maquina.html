@@ -1,0 +1,111 @@
+<!-- Backdrop -->
+<div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+  <!-- Card -->
+  <div class="w-full max-w-lg bg-white rounded-xl shadow-lg p-8 border border-gray-300">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold">Nova Máquina</h1>
+      <p class="text-gray-500">
+        Cadastre uma nova máquina ou equipamento no sistema
+      </p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="salvar()" class="space-y-6">
+
+      <!-- Seção: Informações da Máquina -->
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col space-y-1.5">
+          <h3 class="text-lg font-semibold leading-none tracking-tight">
+            Informações da Máquina
+          </h3>
+          <p class="text-sm text-gray-500">
+            Preencha os dados básicos da máquina
+          </p>
+        </div>
+
+        <!-- Nome e Código -->
+        <div class="flex justify-between gap-4">
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-1">Nome *</label>
+            <input
+              type="text"
+              formControlName="nome"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div class="w-1/2">
+            <label class="block text-sm font-medium mb-1">Código *</label>
+            <input
+              type="text"
+              formControlName="codigo"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm
+                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <!-- Tipo -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Tipo *</label>
+          <input
+            type="text"
+            formControlName="tipo"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
+
+      <hr class="border-gray-300" />
+
+      <!-- Seção: Status -->
+      <div class="flex flex-col gap-4">
+        <div>
+          <h3 class="font-medium">Status da Máquina</h3>
+          <p class="text-sm text-gray-500">
+            Defina a situação atual da máquina
+          </p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Status *</label>
+          <select
+            formControlName="status"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm
+                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="OPERACIONAL">Operacional</option>
+            <option value="MANUTENCAO">Em Manutenção</option>
+            <option value="DESATIVADA">Desativada</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="border-gray-300" />
+
+      <!-- Ações -->
+      <div class="flex justify-between items-center gap-4 pt-4">
+        <button
+          type="button"
+          (click)="fechar.emit()"
+          class="px-6 py-2 border border-gray-300 rounded-lg text-sm
+                 hover:bg-gray-100">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          [disabled]="form.invalid"
+          class="px-6 py-2 bg-blue-600 text-white rounded-lg text-sm
+                 hover:bg-blue-700 disabled:opacity-50">
+          Salvar Máquina
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
