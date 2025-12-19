@@ -9,7 +9,7 @@ const USER_KEY = 'auth_user';
 export class Auth {
 
   private users: User[] = [
-    {id: 1, username: 'admin', password: '1234', email:'admin@email.com', firstName: 'Admin', roles: [UserRole.ADMIN], isActive: true},
+    {id: 1, username: 'admin', password: '1234', email:'admin@email.com', firstName: 'Admin', roles: UserRole.ADMIN, isActive: true},
   ]
 
   private checkUserAuthenticated(): User | null {
