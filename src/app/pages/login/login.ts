@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Auth } from '../../core/services/auth';
+import { AuthService } from '../../core/services/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class Login {
 
-  authService = inject(Auth);
+  authService = inject(AuthService);
   router = inject(Router);
 
   isLoading: boolean = false;
