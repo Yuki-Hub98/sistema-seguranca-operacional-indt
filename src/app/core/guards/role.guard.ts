@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, ActivatedRouteSnapshot, Router } from '@angular/router';
-import { Auth } from '../services/auth';
+import { AuthService } from '../services/auth';
 import { UserRole } from '../../models/user';
 
 export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const auth = inject(Auth);
+  const auth = inject(AuthService);
   const router = inject(Router);
 
   const user = auth.currentUser();
