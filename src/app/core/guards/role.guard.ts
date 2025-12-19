@@ -16,7 +16,14 @@ export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
 
   const allowedRoles = route.data?.['roles'] as UserRole | undefined;
   
-  if (allowedRoles === undefined) {
+  if (!allowedRoles) {
+    router.navigate(['/']);
+    return false;
+  }
+
+  const hasPermission = allowedRoles.includes(user.roles);
+
+  if (!hasPermission) {
     router.navigate(['/']);
     return false;
   }
