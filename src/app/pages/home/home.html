@@ -7,32 +7,28 @@
       <div class="p-4 bg-sky-50 backdrop-blur-sm rounded-2xl shadow-sm border border-blue-500 flex items-center justify-between border">
         <div>
           <p class="text-sm text-gray-500">funcionarios ativos</p>
-          <p class="text-3xl font-bold">156</p>
-          <!-- <p>{{funcionarios.getFuncionarios()}}</p> -->
+          <p class="text-3xl font-bold">{{ funcionariosAtivos }}</p>
         </div>
         <div class="text-gray-600 text-3xl">👥</div>
       </div>
       <div class="p-4 bg-emerald-50 backdrop-blur-sm rounded-2xl shadow-sm border border-green-500 border flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Maquinas cadastradas</p>
-          <p class="text-3xl font-bold">57</p>
-          <!-- <p>{{maquinas.getMaquinas()}}</p> -->
+          <p class="text-3xl font-bold">{{ maquinasCadastradas }}</p>
         </div>
         <div class="text-gray-600 text-3xl">⚙️</div>
       </div>
       <div class="p-4 bg-sky-50 backdrop-blur-sm rounded-2xl shadow-sm border border-blue-500 border flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Checklist Hoje</p>
-          <p class="text-3xl font-bold">27</p>
-          <!-- <p>{{checklist.getChecklist()}}</p> -->
+          <p class="text-3xl font-bold">{{ checklistHoje }}</p>
         </div>
         <div class="text-gray-600 text-3xl">📝</div>
       </div>
       <div class="p-4 bg-amber-50 backdrop-blur-sm rounded-2xl shadow-sm border border-yellow-500 border flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Alertas Pendentes</p>
-          <p class="text-3xl font-bold">3</p>
-          <!-- <p>{{Alertas.getAlertas()}}</p> -->
+          <p class="text-3xl font-bold">{{ alertasPendentes }}</p>
         </div>
         <div class="text-yellow-500 text-3xl">⚠️</div>
       </div>
@@ -82,17 +78,22 @@
       <!-- status geral -->
       <div class="bg-white p-6 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100">
         <h2 class="text-xl font-bold mb-4">Status geral</h2>
-        <p class="text-sm font-medium">Checklist aprovados</p>
-        <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
-          <div class="bg-green-500 h-3 rounded" style="width: 85%"></div>
-        </div>
-        <p class="text-sm font-medium">Pendentes</p>
-        <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
-          <div class="bg-yellow-500 h-3 rounded" style="width: 10%"></div>
-        </div>
-        <p class="text-sm font-medium">Reprovados</p>
-        <div class="w-full bg-gray-200 h-3 rounded mt-1">
-          <div class="bg-red-500 h-3 rounded" style="width: 5%"></div>
+        
+        <app-pie-chart [data]="checklistData" [size]="220"></app-pie-chart>
+        
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <p class="text-sm font-medium">Checklist aprovados</p>
+          <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
+            <div class="bg-green-500 h-3 rounded" [style.width.%]="percentualAprovados"></div>
+          </div>
+          <p class="text-sm font-medium">Pendentes</p>
+          <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
+            <div class="bg-yellow-500 h-3 rounded" [style.width.%]="percentualPendentes"></div>
+          </div>
+          <p class="text-sm font-medium">Reprovados</p>
+          <div class="w-full bg-gray-200 h-3 rounded mt-1">
+            <div class="bg-red-500 h-3 rounded" [style.width.%]="percentualReprovados"></div>
+          </div>
         </div>
       </div>
     </div>
