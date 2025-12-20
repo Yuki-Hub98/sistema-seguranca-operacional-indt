@@ -4,8 +4,9 @@ import { faEnvelope, faUser, faIdBadge } from '@fortawesome/free-regular-svg-ico
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../../core/services/auth';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UserFormGroup, UserRole } from '../../models/user';
+import { User, UserFormGroup, UserRole } from '../../models/user';
 import { senhaIgualValidator } from '../../core/validators/senha-igual-validator';
+import { UserService } from '../../core/services/user-service';
 
 @Component({
   selector: 'app-perfil',
@@ -22,6 +23,7 @@ export class Perfil {
   readonly adminRole = UserRole.ADMIN;
 
   private authService = inject(AuthService);
+  private usersService = inject(UserService);
   private formBuilder = inject(FormBuilder);
 
   currentUser = this.authService.currentUser();
@@ -47,6 +49,24 @@ export class Perfil {
   );
 
   onSubmit() {
-      console.log('Form submitted:', this.userForm.value);
+    const { username, email, newPassword, firstName, lastName, roles, isActive } =
+      this.userForm.getRawValue() as Partial<User & { newPassword: string | undefined }>;
+
+    const partialUser: Partial<User> = { username, email, firstName, lastName, roles, isActive };
+    if (newPassword) {
+      partialUser.password = newPassword;
+    }
+
+    if (this.currentUser) {
+      this.usersService.updateUser(this.currentUser.id, partialUser);
+      console.log(this.userForm.value);
+      this.currentUser = {...this.currentUser, ...partialUser, }
+      this.userForm.reset({
+        ...partialUser,
+        newPassword: '',
+        confirmPassword: '',
+      });
+      console.log(this.userForm.value);
+    }
   }
 }

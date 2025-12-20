@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "1234admin",
+    "email": "admin@email.com",
+    "firstName": "Admin",
+    "roles": "ADMIN",
+    "isActive": true
+  },
+  {
+    "id": 2,
+    "username": "supervisor",
+    "password": "1234supervisor",
+    "email": "supervisor@email.com",
+    "firstName": "Supervisor",
+    "roles": "SUPERVISOR",
+    "isActive": true
+  },
+  {
+    "id": 3,
+    "username": "operador",
+    "password": "1234operador",
+    "email": "operador@email.com",
+    "firstName": "Operador",
+    "roles": "OPERADOR",
+    "isActive": true
+  }
+]

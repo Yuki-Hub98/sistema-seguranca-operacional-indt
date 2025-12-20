@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { User, UserRole } from '../../models/user';
-import { UserService } from '../../src/app/core/services/user-service';
+import { UserService } from './user-service';
 
 const USER_KEY = 'auth_user';
 
