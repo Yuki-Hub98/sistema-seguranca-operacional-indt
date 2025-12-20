@@ -56,17 +56,5 @@ export class Perfil {
     if (newPassword) {
       partialUser.password = newPassword;
     }
-
-    if (this.currentUser) {
-      this.usersService.updateUser(this.currentUser.id, partialUser);
-      console.log(this.userForm.value);
-      this.currentUser = {...this.currentUser, ...partialUser, }
-      this.userForm.reset({
-        ...partialUser,
-        newPassword: '',
-        confirmPassword: '',
-      });
-      console.log(this.userForm.value);
-    }
   }
 }
