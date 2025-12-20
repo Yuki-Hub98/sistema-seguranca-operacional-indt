@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { User, UserRole } from '../../models/user';
-import { UserService } from '../../src/app/core/services/user-service';
+import { UserService } from './user-service';
 
 const USER_KEY = 'auth_user';
 
@@ -32,5 +32,18 @@ export class AuthService {
       this.thisAuthenticate.set(false);
       return false;
     }
+  }
+
+  setCurrentUser(user: User | null) {
+    if (user) {
+      sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+      this._currentUser.set(user);
+    }
+  }
+
+  logout() {
+    sessionStorage.removeItem(USER_KEY);
+    this._currentUser.set(null);
+    this.thisAuthenticate.set(false);
   }
 }
