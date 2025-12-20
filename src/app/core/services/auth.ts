@@ -33,4 +33,11 @@ export class AuthService {
       return false;
     }
   }
+
+  setCurrentUser(user: User | null) {
+    if (user) {
+      sessionStorage.setItem(USER_KEY, JSON.stringify(user));
+      this._currentUser.set(user);
+    }
+  }
 }

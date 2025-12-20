@@ -49,12 +49,22 @@ export class Perfil {
   );
 
   onSubmit() {
-    const { username, email, newPassword, firstName, lastName, roles, isActive } =
-      this.userForm.getRawValue() as Partial<User & { newPassword: string | undefined }>;
+    const updatedUser: User = {
+      ...this.currentUser!,
+      username: this.userForm.value.username!,
+      email: this.userForm.value.email!,
+      firstName: this.userForm.value.firstName!,
+      lastName: this.userForm.value.lastName!,
+      roles: this.userForm.value.roles!,
+      isActive: this.userForm.value.isActive!,
+    };
 
-    const partialUser: Partial<User> = { username, email, firstName, lastName, roles, isActive };
-    if (newPassword) {
-      partialUser.password = newPassword;
+    if (this.userForm.value.newPassword) {
+      updatedUser.password = this.userForm.value.newPassword;
     }
+
+    this.usersService.updateUser(updatedUser);
+    this.authService.setCurrentUser(updatedUser);
+    this.userForm.reset({ ...this.userForm.value, newPassword: '', confirmPassword: '' });
   }
 }

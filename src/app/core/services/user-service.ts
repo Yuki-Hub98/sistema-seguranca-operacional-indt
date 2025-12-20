@@ -1,39 +1,17 @@
-import { Injectable, signal } from '@angular/core';
-import { User, UserRole } from '../../models/user';
+import { inject, Injectable, OnInit, signal } from '@angular/core';
+import { User } from '../../models/user';
+import usersJson from '../../data/users.json';
+import { LocalStorageService } from '../../data/data-utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private usersSignal = signal<User[]>([
-    {
-      id: 1,
-      username: 'admin',
-      password: '1234admin',
-      email: 'admin@email.com',
-      firstName: 'Admin',
-      roles: UserRole.ADMIN,
-      isActive: true,
-    },
-    {
-      id: 2,
-      username: 'supervisor',
-      password: '1234supervisor',
-      email: 'supervisor@email.com',
-      firstName: 'Supervisor',
-      roles: UserRole.SUPERVISOR,
-      isActive: true,
-    },
-    {
-      id: 3,
-      username: 'operador',
-      password: '1234operador',
-      email: 'operador@email.com',
-      firstName: 'Operador',
-      roles: UserRole.OPERADOR,
-      isActive: true,
-    },
-  ]);
+  private readonly STORAGE_KEY = 'users-storage';
+  private localStorageService = inject(LocalStorageService);
+  private userStorage = this.localStorageService.create<User>(this.STORAGE_KEY, usersJson as User[]);
+  private usersSignal = signal<User[]>(this.userStorage.load());
+
 
   getUsers(): User[] {
     return this.usersSignal.asReadonly()();
@@ -47,5 +25,15 @@ export class UserService {
 
   getUserById(id: number): User | undefined {
     return this.usersSignal().find((user) => user.id == id);
+  }
+
+  updateUser(updatedUser: User): void {
+    const users = this.usersSignal();
+    const userIndex = users.findIndex((user) => user.id === updatedUser.id);
+    if (userIndex !== -1) {
+      users[userIndex] = updatedUser;
+      this.usersSignal.set(users);
+      this.userStorage.save(users);
+    }
   }
 }
