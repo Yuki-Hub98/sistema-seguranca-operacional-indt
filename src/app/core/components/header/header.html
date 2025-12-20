@@ -1,13 +1,16 @@
 <nav class="flex items-center justify-between px-5 h-16 shadow-md border-b-2 border-gray-200 bg-slate-50">
-  <button class="cursor-pointer" (click)="toggleSidebar()">
+  <button class="cursor-pointer hover:bg-blue-700 hover:text-white hover:rounded-md p-3" (click)="toggleSidebar()">
     <fa-icon [icon]="faBars"></fa-icon>
   </button>
   <div class="flex gap-7">
-    <button class="cursor-pointer">
+    <button class="cursor-pointer hover:bg-blue-700 hover:text-white hover:rounded-md p-3">
       <fa-icon [icon]="faBell"></fa-icon>
     </button>
-    <button class="cursor-pointer" routerLink="/perfil">
+    <button class="cursor-pointer hover:bg-blue-700 hover:text-white hover:rounded-md p-3" routerLink="/perfil">
       <fa-icon [icon]="faUser"></fa-icon>
+    </button>
+    <button class="text-red-700 cursor-pointer hover:bg-red-700 hover:text-white hover:rounded-md p-3" (click)="doLogout()">
+      <fa-icon [icon]="faLogout"></fa-icon>
     </button>
   </div>
 </nav>

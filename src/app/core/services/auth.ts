@@ -40,4 +40,10 @@ export class AuthService {
       this._currentUser.set(user);
     }
   }
+
+  logout() {
+    sessionStorage.removeItem(USER_KEY);
+    this._currentUser.set(null);
+    this.thisAuthenticate.set(false);
+  }
 }
