@@ -1,31 +1,53 @@
 import { Routes } from '@angular/router';
-import { Home } from './pages/home/home';
-import { Login } from './pages/login/login';
-import { Funcionarios } from './pages/funcionarios/funcionarios';
-import { Perfil } from './pages/perfil/perfil';
 import { AuthLayout } from './layout/auth-layout/auth-layout';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { authGuard } from './core/guards/auth.guard';
-import { Maquinas } from './pages/maquinas/maquinas';
+import { UserRole } from './models/user';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
     component: AuthLayout,
     children: [
-      { path: '', component: Login }
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/login/login').then(m => m.Login)
+      },
     ]
   },
   {
     path: '',
     component: MainLayout,
     canActivate: [authGuard],
-    children: [
-      { path: '', component: Home },
-      { path: 'funcionarios', component: Funcionarios },
-      { path: 'perfil', component: Perfil },
-      { path: 'maquinas', component: Maquinas },
-    
+    canActivateChild: [roleGuard],    /* isso aqui define quem tem acesso as rotas, o perfil que está logado e não está na lista não tem acesso, por exemplo funcionario:
+                                        Se admin não estivesse na lista de roles, ia ser redirecionado para '/'.*/
+    children: [                     
+      {
+        path: '',
+        data: {
+          roles: [UserRole.OPERADOR, UserRole.SUPERVISOR, UserRole.ADMIN]
+        },
+        loadComponent: () =>
+          import('./pages/home/home').then(m => m.Home)
+      },
+      {
+        path: 'funcionarios',
+        data: {
+          roles: [UserRole.OPERADOR, UserRole.SUPERVISOR, UserRole.ADMIN]
+        },
+        loadComponent: () =>
+          import('./pages/funcionarios/funcionarios').then(m => m.Funcionarios)
+      },
+      {
+        path: 'perfil',
+        data: {
+          roles: [UserRole.OPERADOR, UserRole.SUPERVISOR, UserRole.ADMIN]
+        },
+        loadComponent: () =>
+          import('./pages/perfil/perfil').then(m => m.Perfil)
+      }
     ]
   }
  
