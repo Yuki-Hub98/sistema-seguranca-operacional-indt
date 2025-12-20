@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { faEnvelope, faUser, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +14,7 @@ import { UserService } from '../../core/services/user-service';
   templateUrl: './perfil.html',
   styleUrl: './perfil.css',
 })
-export class Perfil {
+export class Perfil implements OnInit {
   readonly faUser = faUser;
   readonly faEnvelope = faEnvelope;
   readonly faLock = faLock;
@@ -47,6 +47,12 @@ export class Perfil {
     },
     { validators: [senhaIgualValidator('newPassword', 'confirmPassword')] }
   );
+
+  ngOnInit(): void {
+    if (this.currentUser?.roles !== this.adminRole) {
+      this.userForm.get('roles')?.disable();
+    }
+  }
 
   onSubmit() {
     const updatedUser: User = {
