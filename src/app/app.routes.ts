@@ -4,6 +4,7 @@ import { MainLayout } from './layout/main-layout/main-layout';
 import { authGuard } from './core/guards/auth.guard';
 import { UserRole } from './models/user';
 import { roleGuard } from './core/guards/role.guard';
+import { Maquinas } from './pages/maquinas/maquinas';
 
 export const routes: Routes = [
   {
@@ -47,6 +48,14 @@ export const routes: Routes = [
         },
         loadComponent: () =>
           import('./pages/perfil/perfil').then(m => m.Perfil)
+      },
+      {
+        path: 'maquinas',
+        data: {
+          roles: [UserRole.OPERADOR, UserRole.SUPERVISOR, UserRole.ADMIN]
+        },
+        loadComponent: () =>
+          import('./pages/maquinas/maquinas').then(m => m.Maquinas)
       }
     ]
   }
