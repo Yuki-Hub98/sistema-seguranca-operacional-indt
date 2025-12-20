@@ -7,10 +7,12 @@ import { TabelaMaquinasComponent } from "./components/tabela-maquinas/tabela-maq
 import { FormModalCriaMaquinaComponent } from './components/form-modal-cria-maquina/form-modal-cria-maquina';
 
 
+
 @Component({
   selector: 'app-maquinas',
    standalone: true,
-  imports: [CommonModule, PesquisaMaquinasComponent, TabelaMaquinasComponent, FormModalCriaMaquinaComponent],
+  imports: [CommonModule, PesquisaMaquinasComponent, TabelaMaquinasComponent, 
+  FormModalCriaMaquinaComponent,],
   templateUrl: './maquinas.html',
   styleUrl: './maquinas.css',
 })

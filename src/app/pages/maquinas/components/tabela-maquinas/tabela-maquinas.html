@@ -30,11 +30,12 @@
         </span>
       </td>
       <td class="flex justify-center gap-2 py-2">
-        <button class="border rounded p-2 hover:bg-gray-100">✏️</button>
+        <button class="border rounded p-2 hover:bg-gray-100">
+          <fa-icon [icon]="faPenToSquare"></fa-icon> </button>
         <button
           (click)="excluir.emit(maquina.id)"
           class="border rounded p-2 hover:bg-red-100">
-          🗑️
+          <fa-icon [icon]="faTrashCan"></fa-icon>
         </button>
       </td>
     </tr>

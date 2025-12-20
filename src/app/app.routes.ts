@@ -6,6 +6,7 @@ import { Perfil } from './pages/perfil/perfil';
 import { AuthLayout } from './layout/auth-layout/auth-layout';
 import { MainLayout } from './layout/main-layout/main-layout';
 import { authGuard } from './core/guards/auth.guard';
+import { Maquinas } from './pages/maquinas/maquinas';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,8 @@ export const routes: Routes = [
       { path: '', component: Home },
       { path: 'funcionarios', component: Funcionarios },
       { path: 'perfil', component: Perfil },
+      { path: 'maquinas', component: Maquinas },
+    
     ]
   }
  
