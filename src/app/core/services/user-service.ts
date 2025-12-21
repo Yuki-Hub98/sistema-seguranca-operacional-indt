@@ -9,9 +9,11 @@ import { LocalStorageService } from '../../data/data-utils';
 export class UserService {
   private readonly STORAGE_KEY = 'users-storage';
   private localStorageService = inject(LocalStorageService);
-  private userStorage = this.localStorageService.create<User>(this.STORAGE_KEY, usersJson as User[]);
+  private userStorage = this.localStorageService.create<User>(
+    this.STORAGE_KEY,
+    usersJson as User[]
+  );
   private usersSignal = signal<User[]>(this.userStorage.load());
-
 
   getUsers(): User[] {
     return this.usersSignal.asReadonly()();
@@ -35,5 +37,12 @@ export class UserService {
       this.usersSignal.set(users);
       this.userStorage.save(users);
     }
+  }
+
+  deleteUser(id: number): void {
+    const users = this.usersSignal();
+    const updatedUsers = users.filter((user) => user.id !== id);
+    this.usersSignal.set(updatedUsers);
+    this.userStorage.save(updatedUsers);
   }
 }
