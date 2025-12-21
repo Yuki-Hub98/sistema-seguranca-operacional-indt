@@ -7,10 +7,11 @@ import { AuthService } from '../../core/services/auth';
 import { UserRole } from '../../models/user';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ModalFuncionario } from "../../core/components/modal-funcionario/modal-funcionario";
 
 @Component({
   selector: 'app-funcionarios',
-  imports: [FaIconComponent, FormsModule],
+  imports: [FaIconComponent, FormsModule, ModalFuncionario],
   templateUrl: './funcionarios.html',
   styleUrl: './funcionarios.css',
 })
@@ -20,6 +21,8 @@ export class Funcionarios {
   readonly faPenToSquare = faPenToSquare;
   readonly faTrashCan = faTrashCan;
   readonly admin = UserRole.ADMIN;
+
+  showModal: boolean = false;
 
   private userService = inject(UserService);
   private authService = inject(AuthService);
@@ -36,5 +39,13 @@ export class Funcionarios {
 
   doBuscar() {
     this.users = this.userService.searchUsers(this.searchText);
+  }
+
+  openModal() {
+    this.showModal = true;
+  }
+  
+  closeModal() {
+    this.showModal = false;
   }
 }
