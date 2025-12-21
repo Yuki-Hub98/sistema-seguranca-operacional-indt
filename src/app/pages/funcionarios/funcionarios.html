@@ -1,1 +1,81 @@
-<p>funcionarios works!</p>
+<div>
+  <div class="flex justify-between items-center">
+    <div class="min-h-auto flex justify-center my-5">
+      <div class="w-full max-w-lg">
+        <h1 class="text-3xl font-bold">Funcionários</h1>
+        <p class="text-gray-500">Gerencie os funcionários e suas permissões</p>
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="px-4 py-2 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+    >
+      <fa-icon [icon]="faPlus"></fa-icon> Novo Funcionário
+    </button>
+  </div>
+  <div class="min-h-auto justify-center from-slate-100 to-slate-50">
+    <div class="w-full bg-white rounded-xl shadow-sm p-8 border border-gray-300">
+      <div>
+        <form class="flex gap-6">
+          <div class="flex-1">
+            <input
+              type="text"
+              [(ngModel)]="searchText"
+              placeholder="Buscar funcionários..."
+              name="search-text"
+              id="search-text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <button
+            type="submit"
+            class="flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+            (click)="doBuscar()"
+          >
+            <fa-icon [icon]="faMagnifyingGlass"></fa-icon> Buscar
+          </button>
+        </form>
+      </div>
+      <div class="mt-8 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-gray-600">
+            <tr class="transition-colors border-b border-gray-300">
+              <th class="h-12 px-4 text-left align-middle font-medium">Nome Completo</th>
+              <th class="h-12 px-4 text-left align-middle font-medium">Username</th>
+              <th class="h-12 px-4 text-left align-middle font-medium">E-mail</th>
+              <th class="h-12 px-4 text-left align-middle font-medium">Função</th>
+              <th class="h-12 px-4 text-left align-middle font-medium">Status</th>
+              <th class="h-12 px-4 text-left align-middle font-medium">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users; track user.id) {
+            <tr class="transition-colors border-b border-gray-300 hover:bg-gray-100">
+              <td class="p-4 align-middle">{{ user.firstName }} {{ user.lastName }}</td>
+              <td class="p-4 align-middle">{{ user.username }}</td>
+              <td class="p-4 align-middle">{{ user.email }}</td>
+              <td class="p-4 align-middle">{{ user.roles }}</td>
+              <td class="p-4 align-middle">{{ user.isActive ? 'Ativo' : 'Inativo' }}</td>
+              <td class="p-4 align-middle flex gap-2">
+                <button
+                  class="p-3 border border-gray-300 rounded hover:bg-amber-400 hover:text-white cursor-pointer"
+                >
+                  <fa-icon [icon]="faPenToSquare"></fa-icon>
+                </button>
+                @if (user.roles !== admin) {
+                <button
+                  class="p-3 border border-gray-300 rounded hover:bg-red-700 hover:text-white cursor-pointer"
+                  (click)="doDelete(user.id)"
+                >
+                  <fa-icon [icon]="faTrashCan"></fa-icon>
+                </button>
+                }
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
