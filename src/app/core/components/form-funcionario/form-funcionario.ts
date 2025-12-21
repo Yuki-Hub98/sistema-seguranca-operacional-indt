@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faEnvelope, faUser, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +12,7 @@ import { FaIconComponent } from '@fortawesome/angular-fontawesome';
   templateUrl: './form-funcionario.html',
   styleUrl: './form-funcionario.css',
 })
-export class FormFuncionario {
+export class FormFuncionario implements OnChanges {
   readonly faUser = faUser;
   readonly faEnvelope = faEnvelope;
   readonly faLock = faLock;
@@ -35,23 +35,30 @@ export class FormFuncionario {
 
   userForm = this.formBuilder.group<UserFormGroup>(
     {
-      username: new FormControl(this.selectedUser?.username, [
-        Validators.required,
-        Validators.minLength(3),
-      ]),
-      email: new FormControl(this.selectedUser?.email, [Validators.email]),
+      username: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      email: new FormControl('', [Validators.email]),
       newPassword: new FormControl('', [Validators.minLength(6)]),
       confirmPassword: new FormControl(''),
-      firstName: new FormControl(this.selectedUser?.firstName, [
-        Validators.required,
-        Validators.minLength(2),
-      ]),
-      lastName: new FormControl(this.selectedUser?.lastName, [Validators.minLength(2)]),
-      roles: new FormControl(this.selectedUser?.roles, Validators.required),
-      isActive: new FormControl(this.selectedUser?.isActive, Validators.required),
+      firstName: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      lastName: new FormControl('', [Validators.minLength(2)]),
+      roles: new FormControl(null, Validators.required),
+      isActive: new FormControl(false, Validators.required),
     },
     { validators: [senhaIgualValidator('newPassword', 'confirmPassword')] }
   );
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedUser'] && this.selectedUser) {
+      this.userForm.patchValue({
+        firstName: this.selectedUser.firstName,
+        lastName: this.selectedUser.lastName,
+        username: this.selectedUser.username,
+        email: this.selectedUser.email,
+        roles: this.selectedUser.roles,
+        isActive: this.selectedUser.isActive,
+      });
+    }
+  }
 
   onSubmit() {
     console.log(this.userForm.value);
