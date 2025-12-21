@@ -45,4 +45,17 @@ export class UserService {
     this.usersSignal.set(updatedUsers);
     this.userStorage.save(updatedUsers);
   }
+
+  searchUsers(searchText: string): User[] {
+    if (!searchText) {
+      return this.getUsers();
+    }
+
+    return this.getUsers().filter(
+      (user) =>
+        user.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.lastName?.toLowerCase().includes(searchText.toLowerCase()) ||
+        user.username.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }
 }
