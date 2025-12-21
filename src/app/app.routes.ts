@@ -56,6 +56,14 @@ export const routes: Routes = [
         },
         loadComponent: () =>
           import('./pages/maquinas/maquinas').then(m => m.Maquinas)
+      },
+      {
+        path: 'checklist',
+        data: {
+          roles: [UserRole.OPERADOR, UserRole.SUPERVISOR, UserRole.ADMIN]
+        },
+        loadComponent: () =>
+          import('./pages/checklists/checklists').then(m => m.Checklists)
       }
     ]
   }

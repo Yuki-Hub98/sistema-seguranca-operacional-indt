@@ -14,21 +14,21 @@
       <div class="p-4 bg-emerald-50 backdrop-blur-sm rounded-2xl shadow-sm border border-green-500 border flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Maquinas cadastradas</p>
-          <p class="text-3xl font-bold">{{ maquinasCadastradas }}</p>
+          <p class="text-3xl font-bold">{{ maquinasCadastradas() }}</p>
         </div>
         <div class="text-gray-600 text-3xl">⚙️</div>
       </div>
       <div class="p-4 bg-sky-50 backdrop-blur-sm rounded-2xl shadow-sm border border-blue-500 border flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Checklist Hoje</p>
-          <p class="text-3xl font-bold">{{ checklistHoje }}</p>
+          <p class="text-3xl font-bold">{{ checklistHoje() }}</p>
         </div>
         <div class="text-gray-600 text-3xl">📝</div>
       </div>
       <div class="p-4 bg-amber-50 backdrop-blur-sm rounded-2xl shadow-sm border border-yellow-500 border flex items-center justify-between">
         <div>
           <p class="text-sm text-gray-500">Alertas Pendentes</p>
-          <p class="text-3xl font-bold">{{ alertasPendentes }}</p>
+          <p class="text-3xl font-bold">{{ alertasPendentes() }}</p>
         </div>
         <div class="text-yellow-500 text-3xl">⚠️</div>
       </div>
@@ -37,54 +37,104 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
       <div class="lg:col-span-2 text-xl font-bold mb-4 bg-white p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100">
         <h2 class="p-3">Alertas recentes</h2>
-        <div class="border border-red-300 bg-red-50 p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 mb-4">
-          <div class="flex items-center justify-between">
-            <p class="text-red-600 font-semibold flex items-center gap-2">Checklist Recusado</p>
-            <span class="px-3 py-1 text-sm bg-red-600 text-white rounded-full">Urgente</span>
+        
+        @if (checklistsPendentes().length === 0) {
+          <div class="text-center py-8 text-gray-500">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p>Nenhum alerta pendente</p>
           </div>
-          <p class="text-gray-700 mt-1">Prensa Hidráulica PH-001</p>
-          <p class="text-gray-500 text-sm">Operador: João Silva • 25/11/2025</p>
-        </div>
-        <div class="border p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 mb-4 bg-slate-50">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold flex items-center gap-2">Checklist Pendente</p>
-            <span class="px-3 py-1 text-sm bg-gray-200 rounded-full">Atenção</span>
-          </div>
-          <p class="text-gray-700 mt-1">Torno CNC TC-015</p>
-          <p class="text-gray-500 text-sm">Operador: Maria Santos • 24/11/2025</p>
-        </div>
-        <div class="border p-4 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 bg-slate-50">
-          <div class="flex items-center justify-between">
-            <p class="font-semibold flex items-center gap-2">Checklist Pendente</p>
-            <span class="px-3 py-1 text-sm bg-gray-200 rounded-full">Atenção</span>
-          </div>
-          <p class="text-gray-700 mt-1">Empilhadeira EMP-007</p>
-          <p class="text-gray-500 text-sm">Operador: Carlos Souza • 23/11/2025</p>
-        </div>
-
-        <!-- @if(alertas.getAlertas() > 0){
-                @for(alerta in alertas){
-                    <div>
-                        <div>
-                            <p>alerta.alertaType</p>
-                            <span>alerta.alertaPriority</span>
-                        </div>
-                        <p>alerta.maquina</p>
-                        <p>alerta.operador alerta.reportDate</p>
-                    </div>
+        } @else {
+          @for (checklist of checklistsPendentes(); track checklist.id) {
+            <div class="p-4 backdrop-blur-sm rounded-2xl shadow-sm border mb-4"
+                 [class.border-red-300]="checklist.status === 'REPROVADO'"
+                 [class.bg-red-50]="checklist.status === 'REPROVADO'"
+                 [class.border-yellow-300]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && temItemCritico(checklist)"
+                 [class.bg-yellow-50]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && temItemCritico(checklist)"
+                 [class.border-blue-300]="checklist.status === 'ATIVO'"
+                 [class.bg-blue-50]="checklist.status === 'ATIVO'"
+                 [class.border-gray-200]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && !temItemCritico(checklist)"
+                 [class.bg-slate-50]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && !temItemCritico(checklist)">
+              <div class="flex items-center justify-between">
+                <p class="font-semibold flex items-center gap-2"
+                   [class.text-red-600]="checklist.status === 'REPROVADO'"
+                   [class.text-yellow-600]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && temItemCritico(checklist)"
+                   [class.text-blue-600]="checklist.status === 'ATIVO'"
+                   [class.text-gray-700]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && !temItemCritico(checklist)">
+                  @if (checklist.status === 'REPROVADO') {
+                    Checklist Reprovado
+                  } @else if (checklist.status === 'ATIVO') {
+                    Checklist Ativo - Aguardando Validação
+                  } @else if (checklist.status === 'EM_VALIDACAO') {
+                    Checklist em Validação
+                  } @else if (temItemCritico(checklist)) {
+                    Checklist Pendente - Alta Criticidade
+                  } @else {
+                    Checklist Pendente
+                  }
+                </p>
+                <span class="px-3 py-1 text-sm rounded-full"
+                      [class.bg-red-600]="checklist.status === 'REPROVADO'"
+                      [class.text-white]="checklist.status === 'REPROVADO'"
+                      [class.bg-yellow-500]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && temItemCritico(checklist)"
+                      [class.text-white]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && temItemCritico(checklist)"
+                      [class.bg-blue-500]="checklist.status === 'ATIVO'"
+                      [class.text-white]="checklist.status === 'ATIVO'"
+                      [class.bg-gray-200]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && !temItemCritico(checklist)"
+                      [class.text-gray-700]="(checklist.status === 'VALIDADO' || checklist.status === 'EM_VALIDACAO') && !temItemCritico(checklist)">
+                  @if (checklist.status === 'REPROVADO') {
+                    Urgente
+                  } @else if (checklist.status === 'ATIVO') {
+                    Novo
+                  } @else if (checklist.status === 'EM_VALIDACAO') {
+                    Em Andamento
+                  } @else if (temItemCritico(checklist)) {
+                    Atenção
+                  } @else {
+                    Normal
+                  }
+                </span>
+              </div>
+              <p class="text-gray-700 mt-1 font-medium">{{ checklist.titulo }}</p>
+              @if (checklist.maquinaNome) {
+                <p class="text-gray-600 text-sm">{{ checklist.maquinaNome }}</p>
+              }
+              <div class="flex items-center justify-between mt-2">
+                <p class="text-gray-500 text-sm">
+                  @if (checklist.validacoes && checklist.validacoes.length > 0) {
+                    Operador: {{ checklist.validacoes[0].validadoPorNome }} • {{ checklist.validacoes[0].dataValidacao | date:'dd/MM/yyyy' }}
+                  } @else {
+                    Criado por: {{ checklist.criadoPorNome }} • {{ checklist.dataCriacao | date:'dd/MM/yyyy' }}
+                  }
+                </p>
+                @if (checklist.status === 'REPROVADO' && checklist.aprovacao?.motivo) {
+                  <button 
+                    type="button"
+                    (click)="abrirModal(checklist)"
+                    class="text-xs text-red-600 hover:text-red-800 underline font-medium">
+                    Ver motivo
+                  </button>
                 }
-            } -->
+              </div>
+            </div>
+          }
+        }
       </div>
       <!-- status geral -->
       <div class="bg-white p-6 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100">
         <h2 class="text-xl font-bold mb-4">Status geral</h2>
         
-        <app-pie-chart [data]="checklistData" [size]="220"></app-pie-chart>
+        <app-pie-chart [data]="checklistData()" [size]="220"></app-pie-chart>
         
         <div class="mt-6 pt-6 border-t border-gray-200">
           <p class="text-sm font-medium">Checklist aprovados</p>
           <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
             <div class="bg-green-500 h-3 rounded" [style.width.%]="percentualAprovados"></div>
+          </div>
+          <p class="text-sm font-medium">Ativos</p>
+          <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
+            <div class="bg-blue-500 h-3 rounded" [style.width.%]="percentualAtivos"></div>
           </div>
           <p class="text-sm font-medium">Pendentes</p>
           <div class="w-full bg-gray-200 h-3 rounded mt-1 mb-4">
@@ -98,4 +148,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de Detalhes -->
+  <app-checklist-detail-modal
+    [checklist]="checklistSelecionado()"
+    [show]="mostrarModal()"
+    (close)="fecharModal()">
+  </app-checklist-detail-modal>
 </div>
