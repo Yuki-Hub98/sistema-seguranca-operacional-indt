@@ -1,1 +1,621 @@
-<p>checklists works!</p>
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-7xl mx-auto">
+    
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">Checklists de Segurança</h1>
+      <p class="mt-2 text-gray-600">
+        @if (currentUser()?.roles === UserRole.ADMIN) {
+          Gerencie e crie checklists para as máquinas
+        } @else if (currentUser()?.roles === UserRole.OPERADOR) {
+          Valide os checklists das máquinas
+        } @else if (currentUser()?.roles === UserRole.SUPERVISOR) {
+          Aprove ou reprove os checklists validados
+        }
+      </p>
+    </div>
+
+    <!-- VIEW: LISTA -->
+    @if (view() === 'lista') {
+      <div>
+        <!-- Ações do Header -->
+        <div class="mb-6 flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-600">
+              Total: <strong>{{ checklistsFiltrados().length }}</strong> checklists
+            </span>
+          </div>
+          
+          @if (currentUser()?.roles === UserRole.ADMIN) {
+            <button
+              (click)="abrirCriarChecklist()"
+              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Novo Checklist
+            </button>
+          }
+        </div>
+
+        <!-- Grid de Checklists -->
+        @if (checklistsFiltrados().length === 0) {
+          <div class="bg-white rounded-lg shadow p-12 text-center">
+            <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <p class="text-gray-500 text-lg">Nenhum checklist disponível</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @for (checklist of checklistsFiltrados(); track checklist.id) {
+              <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 flex flex-col">
+                <!-- Card Header -->
+                <div class="p-6 flex-1 flex flex-col">
+                  <div class="flex justify-between items-start mb-3">
+                    <h3 class="text-lg font-semibold text-gray-900 flex-1 line-clamp-2 min-h-[3.5rem]">{{ checklist.titulo }}</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ml-2 {{ getStatusColor(checklist.status) }}">
+                      {{ checklist.status }}
+                    </span>
+                  </div>
+                  
+                  <p class="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[2.5rem]">{{ checklist.descricao }}</p>
+                  
+                  <!-- Info -->
+                  <div class="space-y-2 text-sm text-gray-600 mb-4">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                      </svg>
+                      <span>{{ checklist.itens.length }} itens</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 min-h-[1.5rem]">
+                      @if (checklist.maquinaNome) {
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                        </svg>
+                        <span class="truncate">{{ checklist.maquinaNome }}</span>
+                      }
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                      </svg>
+                      <span class="truncate">{{ checklist.criadoPorNome }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Progresso (se houver validações) -->
+                  <div class="mt-auto">
+                    @if (checklist.status !== ChecklistStatus.RASCUNHO) {
+                      <div class="mt-4">
+                        <div class="flex justify-between items-center mb-1">
+                          <span class="text-xs text-gray-600">Progresso</span>
+                          <span class="text-xs font-medium text-gray-900">{{ getProgressoValidacao(checklist) }}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            class="bg-blue-600 h-2 rounded-full transition-all"
+                            [style.width.%]="getProgressoValidacao(checklist)">
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Card Actions -->
+                <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 flex gap-2">
+                  @if (currentUser()?.roles === UserRole.ADMIN) {
+                    <button
+                      (click)="verDetalhes(checklist)"
+                      class="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors">
+                      Ver Detalhes
+                    </button>
+                    <button
+                      (click)="alternarStatusChecklist(checklist)"
+                      class="px-3 py-2 text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors"
+                      [title]="checklist.status === ChecklistStatus.ATIVO ? 'Arquivar' : 'Ativar'">
+                      @if (checklist.status === ChecklistStatus.ATIVO) {
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                        </svg>
+                      } @else {
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                      }
+                    </button>
+                    <button
+                      (click)="deletarChecklist(checklist.id)"
+                      class="px-3 py-2 text-sm border border-red-300 text-red-700 rounded hover:bg-red-50 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  }
+
+                  @if (currentUser()?.roles === UserRole.OPERADOR && (checklist.status === ChecklistStatus.ATIVO || checklist.status === ChecklistStatus.EM_VALIDACAO)) {
+                    <button
+                      (click)="abrirValidarChecklist(checklist)"
+                      class="flex-1 px-3 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                      {{ checklist.status === ChecklistStatus.EM_VALIDACAO ? 'Continuar Validação' : 'Validar Checklist' }}
+                    </button>
+                  }
+
+                  @if (currentUser()?.roles === UserRole.SUPERVISOR && checklist.status === ChecklistStatus.VALIDADO) {
+                    <button
+                      (click)="abrirAprovarChecklist(checklist)"
+                      class="flex-1 px-3 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+                      Aprovar/Reprovar
+                    </button>
+                  }
+
+                  @if (currentUser()?.roles === UserRole.SUPERVISOR && (checklist.status === ChecklistStatus.APROVADO || checklist.status === ChecklistStatus.REPROVADO)) {
+                    <button
+                      (click)="verDetalhes(checklist)"
+                      class="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors">
+                      Ver Detalhes
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- VIEW: CRIAR CHECKLIST (Admin) -->
+    @if (view() === 'criar' && currentUser()?.roles === UserRole.ADMIN) {
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-900">Criar Novo Checklist</h2>
+          <button
+            (click)="voltarParaLista()"
+            class="text-gray-600 hover:text-gray-900">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <form (submit)="salvarChecklist(); $event.preventDefault()" class="space-y-6">
+          <!-- Informações Básicas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Título *</label>
+              <input
+                type="text"
+                [ngModel]="novoChecklist().titulo"
+                (ngModelChange)="atualizarTitulo($event)"
+                name="titulo"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Ex: Checklist Diário - Torno CNC">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Nome da Máquina</label>
+              <input
+                type="text"
+                [ngModel]="novoChecklist().maquinaNome"
+                (ngModelChange)="atualizarMaquinaNome($event)"
+                name="maquinaNome"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Ex: Torno CNC XYZ-1000">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+            <textarea
+              [ngModel]="novoChecklist().descricao"
+              (ngModelChange)="atualizarDescricao($event)"
+              name="descricao"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Descreva o objetivo e contexto deste checklist..."></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Status Inicial</label>
+            <select
+              [ngModel]="novoChecklist().status"
+              (ngModelChange)="atualizarStatus($event)"
+              name="status"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option [value]="ChecklistStatus.RASCUNHO">Rascunho</option>
+              <option [value]="ChecklistStatus.ATIVO">Ativo</option>
+            </select>
+          </div>
+
+          <!-- Adicionar Itens -->
+          <div class="border-t pt-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Itens do Checklist</h3>
+            
+            <!-- Formulário de Novo Item -->
+            <div class="bg-gray-50 p-4 rounded-lg mb-4">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div class="md:col-span-7">
+                  <input
+                    type="text"
+                    [ngModel]="novoItem().descricao"
+                    (ngModelChange)="atualizarItemDescricao($event)"
+                    name="itemDescricao"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Descrição do item...">
+                </div>
+                <div class="md:col-span-3">
+                  <select
+                    [ngModel]="novoItem().criticidade"
+                    (ngModelChange)="atualizarItemCriticidade($event)"
+                    name="itemCriticidade"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="BAIXA">Baixa</option>
+                    <option value="MEDIA">Média</option>
+                    <option value="ALTA">Alta</option>
+                    <option value="CRITICA">Crítica</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <button
+                    type="button"
+                    (click)="adicionarItemNovoChecklist()"
+                    class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    Adicionar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista de Itens Adicionados -->
+            @if (novoChecklist().itens.length === 0) {
+              <div class="text-center py-8 text-gray-500">
+                <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <p>Nenhum item adicionado ainda</p>
+              </div>
+            } @else {
+              <div class="space-y-2">
+                @for (item of novoChecklist().itens; track $index) {
+                  <div class="flex items-center gap-4 p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow">
+                    <span class="text-gray-500 font-medium">{{ $index + 1 }}.</span>
+                    <p class="flex-1 text-gray-900">{{ item.descricao }}</p>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full {{ getCriticidadeColor(item.criticidade) }}">
+                      {{ item.criticidade }}
+                    </span>
+                    <button
+                      type="button"
+                      (click)="removerItemNovoChecklist($index)"
+                      class="text-red-600 hover:text-red-800">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Botões -->
+          <div class="flex justify-end gap-4 border-t pt-6">
+            <button
+              type="button"
+              (click)="voltarParaLista()"
+              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              Salvar Checklist
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- VIEW: VALIDAR CHECKLIST (Operador) -->
+    @if (view() === 'validar' && currentUser()?.roles === UserRole.OPERADOR && checklistSelecionado()) {
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-6">
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold text-gray-900">{{ checklistSelecionado()!.titulo }}</h2>
+            <p class="text-gray-600 mt-1">{{ checklistSelecionado()!.descricao }}</p>
+            @if (checklistSelecionado()!.maquinaNome) {
+              <p class="text-sm text-gray-500 mt-2">Máquina: {{ checklistSelecionado()!.maquinaNome }}</p>
+            }
+          </div>
+          <button
+            (click)="voltarParaLista()"
+            class="text-gray-600 hover:text-gray-900">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Progresso -->
+        <div class="mb-6 p-4 bg-blue-50 rounded-lg">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium text-gray-700">Progresso da Validação</span>
+            <span class="text-sm font-bold text-blue-600">{{ getProgressoValidacao(checklistSelecionado()!) }}%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div 
+              class="bg-blue-600 h-3 rounded-full transition-all"
+              [style.width.%]="getProgressoValidacao(checklistSelecionado()!)">
+            </div>
+          </div>
+        </div>
+
+        <form (submit)="salvarValidacao(); $event.preventDefault()" class="space-y-6">
+          <!-- Lista de Itens para Validar -->
+          <div class="space-y-4">
+            @for (item of checklistSelecionado()!.itens; track item.id) {
+              <div class="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                   [class.bg-green-50]="validacaoForm()[item.id]?.validado"
+                   [class.border-green-300]="validacaoForm()[item.id]?.validado">
+                <div class="flex items-start gap-4">
+                  <!-- Checkbox -->
+                  <div class="flex-shrink-0 pt-1">
+                    <button
+                      type="button"
+                      (click)="toggleValidacaoItem(item.id)"
+                      class="w-6 h-6 rounded border-2 flex items-center justify-center transition-colors"
+                      [class.border-green-500]="validacaoForm()[item.id]?.validado"
+                      [class.bg-green-500]="validacaoForm()[item.id]?.validado"
+                      [class.border-gray-300]="!validacaoForm()[item.id]?.validado">
+                      @if (validacaoForm()[item.id]?.validado) {
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                        </svg>
+                      }
+                    </button>
+                  </div>
+
+                  <div class="flex-1">
+                    <div class="flex items-start justify-between gap-4 mb-2">
+                      <p class="text-gray-900 font-medium">{{ item.descricao }}</p>
+                      <span class="px-2 py-1 text-xs font-medium rounded-full whitespace {{ getCriticidadeColor(item.criticidade) }}">
+                        {{ item.criticidade }}
+                      </span>
+                    </div>
+
+                    <!-- Campo de Observação -->
+                    <div class="mt-3">
+                      <textarea
+                        [ngModel]="validacaoForm()[item.id]?.observacao"
+                        (ngModelChange)="atualizarObservacaoItem(item.id, $event)"
+                        [name]="'observacao_' + item.id"
+                        rows="2"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Observações (opcional)..."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Observação Geral -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Observação Geral (Opcional)</label>
+            <textarea
+              [ngModel]="observacaoGeralValidacao()"
+              (ngModelChange)="atualizarObservacaoGeral($event)"
+              name="observacaoGeral"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Comentários gerais sobre a validação..."></textarea>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex justify-end gap-4 border-t pt-6">
+            <button
+              type="button"
+              (click)="voltarParaLista()"
+              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              Salvar Validação
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- VIEW: APROVAR CHECKLIST (Supervisor) -->
+    @if (view() === 'aprovar' && currentUser()?.roles === UserRole.SUPERVISOR && checklistSelecionado()) {
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-6">
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold text-gray-900">Aprovação de Checklist</h2>
+            <h3 class="text-xl text-gray-700 mt-2">{{ checklistSelecionado()!.titulo }}</h3>
+            <p class="text-gray-600 mt-1">{{ checklistSelecionado()!.descricao }}</p>
+          </div>
+          <button
+            (click)="voltarParaLista()"
+            class="text-gray-600 hover:text-gray-900">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Resumo da Validação -->
+        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+          <h4 class="font-semibold text-gray-900 mb-3">Resumo da Validação</h4>
+          
+          @if (checklistSelecionado()!.validacoes && checklistSelecionado()!.validacoes!.length > 0) {
+            @for (validacao of checklistSelecionado()!.validacoes!; track validacao.id) {
+              <div class="mb-4 pb-4 border-b last:border-b-0">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-medium text-gray-700">Validado por: {{ validacao.validadoPorNome }}</span>
+                  <span class="text-sm text-gray-500">{{ validacao.dataValidacao | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+                @if (validacao.observacaoGeral) {
+                  <p class="text-sm text-gray-600 mt-2">{{ validacao.observacaoGeral }}</p>
+                }
+              </div>
+            }
+          }
+
+          <!-- Progresso -->
+          <div class="mt-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-700">Itens Validados</span>
+              <span class="text-sm font-bold text-green-600">{{ getProgressoValidacao(checklistSelecionado()!) }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+              <div 
+                class="bg-green-600 h-3 rounded-full transition-all"
+                [style.width.%]="getProgressoValidacao(checklistSelecionado()!)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Itens Validados -->
+        <div class="mb-6">
+          <h4 class="font-semibold text-gray-900 mb-3">Itens do Checklist</h4>
+          <div class="space-y-2">
+            @for (item of checklistSelecionado()!.itens; track item.id) {
+              <div class="flex items-start gap-3 p-3 rounded-lg"
+                   [class.bg-green-50]="item.validado"
+                   [class.bg-red-50]="!item.validado">
+                <div class="flex-shrink-0 pt-1">
+                  @if (item.validado) {
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  } @else {
+                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  }
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-start justify-between gap-4">
+                    <p class="text-gray-900">{{ item.descricao }}</p>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap {{ getCriticidadeColor(item.criticidade) }}">
+                      {{ item.criticidade }}
+                    </span>
+                  </div>
+                  @if (item.observacao) {
+                    <p class="text-sm text-gray-600 mt-1 italic">{{ item.observacao }}</p>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Formulário de Aprovação -->
+        <form (submit)="aprovar(); $event.preventDefault()" class="space-y-6 border-t pt-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-3">Decisão</label>
+            <div class="flex gap-4">
+              <button
+                type="button"
+                (click)="setAprovado(true)"
+                class="flex-1 px-6 py-3 rounded-lg border-2 transition-colors"
+                [class.border-green-500]="aprovacaoForm().aprovado"
+                [class.bg-green-50]="aprovacaoForm().aprovado"
+                [class.border-gray-300]="!aprovacaoForm().aprovado">
+                <div class="flex items-center justify-center gap-2">
+                  <svg class="w-6 h-6" [class.text-green-600]="aprovacaoForm().aprovado" [class.text-gray-400]="!aprovacaoForm().aprovado" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span class="font-semibold" [class.text-green-600]="aprovacaoForm().aprovado" [class.text-gray-600]="!aprovacaoForm().aprovado">
+                    Aprovar
+                  </span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                (click)="setAprovado(false)"
+                class="flex-1 px-6 py-3 rounded-lg border-2 transition-colors"
+                [class.border-red-500]="!aprovacaoForm().aprovado"
+                [class.bg-red-50]="!aprovacaoForm().aprovado"
+                [class.border-gray-300]="aprovacaoForm().aprovado">
+                <div class="flex items-center justify-center gap-2">
+                  <svg class="w-6 h-6" [class.text-red-600]="!aprovacaoForm().aprovado" [class.text-gray-400]="aprovacaoForm().aprovado" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span class="font-semibold" [class.text-red-600]="!aprovacaoForm().aprovado" [class.text-gray-600]="aprovacaoForm().aprovado">
+                    Reprovar
+                  </span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          @if (!aprovacaoForm().aprovado) {
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Motivo da Reprovação *</label>
+              <input
+                type="text"
+                [ngModel]="aprovacaoForm().motivo"
+                (ngModelChange)="atualizarMotivoReprovacao($event)"
+                name="motivo"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                placeholder="Explique o motivo da reprovação...">
+            </div>
+          }
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Observações</label>
+            <textarea
+              [ngModel]="aprovacaoForm().observacoes"
+              (ngModelChange)="atualizarObservacoesAprovacao($event)"
+              name="observacoes"
+              rows="4"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Comentários adicionais sobre sua decisão..."></textarea>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex justify-end gap-4 border-t pt-6">
+            <button
+              type="button"
+              (click)="voltarParaLista()"
+              class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-6 py-2 rounded-lg text-white transition-colors"
+              [class.bg-green-600]="aprovacaoForm().aprovado"
+              [class.hover:bg-green-700]="aprovacaoForm().aprovado"
+              [class.bg-red-600]="!aprovacaoForm().aprovado"
+              [class.hover:bg-red-700]="!aprovacaoForm().aprovado">
+              {{ aprovacaoForm().aprovado ? 'Confirmar Aprovação' : 'Confirmar Reprovação' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+  </div>
+
+  <!-- Modal de Detalhes -->
+  <app-checklist-detail-modal
+    [checklist]="checklistParaDetalhes()"
+    [show]="mostrarModalDetalhes()"
+    (close)="fecharModalDetalhes()">
+  </app-checklist-detail-modal>
+</div>
