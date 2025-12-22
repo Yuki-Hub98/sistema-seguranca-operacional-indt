@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormFuncionario } from '../form-funcionario/form-funcionario';
-import { initialUserData } from '../../../models/user';
+import { initialUserData, User } from '../../../models/user';
 
 @Component({
   selector: 'app-modal-funcionario',
@@ -11,4 +11,14 @@ import { initialUserData } from '../../../models/user';
 export class ModalFuncionario {
   @Input() isEditMode: boolean = false;
   @Input() selectedUser = initialUserData;
+  @Output() onSave = new EventEmitter<Partial<User>>();
+  @Output() onCancel = new EventEmitter<void>();
+
+  onSaveSubmit(userData: Partial<User>) {
+    this.onSave.emit(userData);
+  }
+
+  onCancelSubmit() {
+    this.onCancel.emit();
+  }
 }

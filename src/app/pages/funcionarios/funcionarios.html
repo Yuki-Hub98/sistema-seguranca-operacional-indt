@@ -8,6 +8,7 @@
     </div>
     <button
       type="submit"
+      (click)="openModal()"
       class="px-4 py-2 h-12 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
     >
       <fa-icon [icon]="faPlus"></fa-icon> Novo Funcionário
@@ -59,7 +60,7 @@
               <td class="p-4 align-middle flex gap-2">
                 <button
                   class="p-3 border border-gray-300 rounded hover:bg-amber-400 hover:text-white cursor-pointer"
-                  (click)="openModal()"
+                  (click)="openModal(true)"
                 >
                   <fa-icon [icon]="faPenToSquare"></fa-icon>
                 </button>
@@ -81,7 +82,10 @@
   </div>
   <div>
     @if (showModal) {
-      <app-modal-funcionario></app-modal-funcionario>
+    <app-modal-funcionario
+      (onCancel)="closeModal()"
+      [isEditMode]="isEditMode"
+    ></app-modal-funcionario>
     }
   </div>
 </div>

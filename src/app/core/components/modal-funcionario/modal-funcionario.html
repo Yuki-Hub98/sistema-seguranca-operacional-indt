@@ -5,6 +5,8 @@
       [formDescription]="isEditMode ? 'Atualize as informações do funcionário' : 'Preencha os dados para criar um novo funcionário'"
       [canChangeStatus]="isEditMode"
       [selectedUser]="selectedUser"
+      (onSave)="onSaveSubmit($event)"
+      (onCancel)="onCancelSubmit()"
     ></app-form-funcionario>
   </div>
 </div>
