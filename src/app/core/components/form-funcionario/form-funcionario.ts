@@ -27,6 +27,7 @@ export class FormFuncionario implements OnChanges {
   @Input() canChangeStatus!: boolean;
   @Input() selectedUser!: User | null;
   @Output() onSave = new EventEmitter<Partial<User>>();
+  @Output() onCancel = new EventEmitter<void>();
 
   ngOnInit(): void {
     if (this.selectedUser?.roles !== this.adminRole) {
@@ -76,5 +77,9 @@ export class FormFuncionario implements OnChanges {
     }
 
     this.onSave.emit(userValues);
+  }
+
+  onCancelSubmit() {
+    this.onCancel.emit();
   }
 }
