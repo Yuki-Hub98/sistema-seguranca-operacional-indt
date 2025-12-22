@@ -10,5 +10,6 @@
     formDescription="Atualize suas informações de perfil"
     [canChangeStatus]="false"
     [selectedUser]="currentUser"
+    (onSave)="onPerfilUpdate($event)"
   ></app-form-funcionario>
 </div>

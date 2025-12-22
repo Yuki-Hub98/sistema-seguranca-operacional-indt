@@ -16,6 +16,13 @@ import { FormFuncionario } from '../../core/components/form-funcionario/form-fun
 })
 export class Perfil {
   private authService = inject(AuthService);
+  private userService = inject(UserService);
 
   currentUser = this.authService.currentUser();
+
+  onPerfilUpdate(updatedData: Partial<User>) {
+    const updatedUser = { ...this.currentUser!, ...updatedData };
+    this.userService.updateUser(updatedUser);
+    this.authService.setCurrentUser(updatedUser);
+  }
 }

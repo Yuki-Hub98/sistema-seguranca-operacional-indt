@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { faEnvelope, faUser, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
@@ -26,6 +26,7 @@ export class FormFuncionario implements OnChanges {
   @Input() formDescription!: string;
   @Input() canChangeStatus!: boolean;
   @Input() selectedUser!: User | null;
+  @Output() onSave = new EventEmitter<Partial<User>>();
 
   ngOnInit(): void {
     if (this.selectedUser?.roles !== this.adminRole) {
@@ -61,6 +62,19 @@ export class FormFuncionario implements OnChanges {
   }
 
   onSubmit() {
-    console.log(this.userForm.value);
+    const userValues: Partial<User> = {
+      firstName: this.userForm.value.firstName!,
+      lastName: this.userForm.value.lastName!,
+      username: this.userForm.value.username!,
+      email: this.userForm.value.email!,
+      roles: this.userForm.value.roles!,
+      isActive: this.userForm.value.isActive!,
+    };
+
+    if (this.userForm.value.newPassword) {
+      userValues.password = this.userForm.value.newPassword;
+    }
+
+    this.onSave.emit(userValues);
   }
 }
