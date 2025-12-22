@@ -29,3 +29,14 @@ export interface UserFormGroup {
   roles: FormControl<UserRole | undefined | null>;
   isActive: FormControl<boolean | undefined | null>;
 }
+
+export const initialUserData: User = {
+  id: NaN,
+  username: '',
+  email: '',
+  password: '',
+  firstName: '',
+  lastName: '',
+  roles: UserRole.VISITANTE,
+  isActive: true,
+};
